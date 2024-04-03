@@ -1,3 +1,4 @@
+import exp from "constants";
 
 export class RegisterUserRequest {
     username: string;
@@ -9,4 +10,9 @@ export class UserResponse {
     username: string;
     name: string;
     token?: string;
+}
+
+export class LoginUserRequest {
+    username: string;
+    password: string;
 }
