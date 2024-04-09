@@ -28,7 +28,7 @@ describe('UserController (e2e)', () => {
   describe("POST /api/users", () => {
     beforeEach(async () => {
       await testService.deleteUser();
-    })
+    });
 
     it("should be rejected if request is invalid", async () => {
       const response = await request(app.getHttpServer())

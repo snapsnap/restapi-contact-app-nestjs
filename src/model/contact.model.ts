@@ -7,7 +7,7 @@ export class ContactResponse {
     phone?: string;
 }
 
-export class CreateContactResponse {
+export class CreateContactRequest {
     first_name: string;
     last_name?: string;
     email?: string;
