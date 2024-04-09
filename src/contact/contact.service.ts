@@ -3,8 +3,10 @@ import { Contact, User } from "@prisma/client";
 import { WINSTON_MODULE_PROVIDER } from "nest-winston";
 import { PrismaService } from "../common/prisma.service";
 import { ValidationService } from "../common/validation.service";
-import { ContactResponse, CreateContactRequest } from "../model/contact.model";
+import { ContactResponse, CreateContactRequest, SearchContactRequest, UpdateContactRequest } from "../model/contact.model";
 import { ContactValidation } from "./contact.validation";
+import { WebResponse } from "src/model/web.model";
+import { filter } from "rxjs";
 
 @Injectable()
 export class ContactService {
@@ -48,13 +50,13 @@ export class ContactService {
         };
     }
 
-    async get(
-        user: User,
+    async checkContactMustExists(
+        username: string,
         contactId: number,
-    ) : Promise<ContactResponse>{
+    ): Promise<Contact> {
         const contact = await this.prismaService.contact.findFirst({
             where: {
-                username: user.username,
+                username: username,
                 id: contactId,
             }
         });
@@ -63,6 +65,130 @@ export class ContactService {
             throw new HttpException('Contact is not found', 400);
         }
 
+        return contact;
+    }
+
+    async get(
+        user: User,
+        contactId: number,
+    ) : Promise<ContactResponse>{
+        const contact = await this.checkContactMustExists(user.username, contactId);
+
         return this.toContactResponse(contact);
+    }
+
+    async update(
+        user: User,
+        request: UpdateContactRequest,
+    ) : Promise<ContactResponse> {
+        const updateRequest = await this.validationService.validate(
+            ContactValidation.UPDATE, 
+            request,
+        );
+        let contact = await this.checkContactMustExists(
+            user.username, 
+            updateRequest.id,
+        );
+
+        contact = await this.prismaService.contact.update({
+            where: {
+                id: contact.id,
+                username: contact.username,
+            },
+            data: updateRequest,
+        });
+
+        return this.toContactResponse(contact);
+    }
+
+    async remove(
+        user: User,
+        contactId: number,
+    ) : Promise<ContactResponse> {
+        await this.checkContactMustExists(user.username, contactId);
+
+        const contact = await this.prismaService.contact.delete({
+            where: {
+                username: user.username,
+                id: contactId,
+            }
+        });
+
+        return this.toContactResponse(contact);
+    }
+
+    async search(
+        user: User,
+        request: SearchContactRequest,
+    ) : Promise<WebResponse<ContactResponse[]>> {
+        const searchRequest: SearchContactRequest = this.validationService.validate(
+            ContactValidation.SEARCH,
+            request,
+        );
+
+        const filters = [];
+
+        if(searchRequest.name){
+            // add name filters
+            filters.push({
+                OR: [
+                    {
+                        first_name: {
+                            contains: searchRequest.name,
+                        },
+                    },
+                    {
+                        last_name: {
+                            contains: searchRequest.name,
+                        },
+                    },
+                ],
+            });
+        }
+
+        if(searchRequest.email){
+            // add email filters
+            filters.push({
+                email: {
+                    contains: searchRequest.email,
+                }
+            });
+        }
+
+        if(searchRequest.phone){
+            // add phone filters
+            filters.push({
+                phone: {
+                    contains: searchRequest.phone,
+                }
+            });
+        }
+
+        const skip = (searchRequest.page - 1) * searchRequest.size;
+
+        const contacts = await this.prismaService.contact.findMany({
+            where:{
+                username: user.username,
+                AND: filters,
+            },
+            take: searchRequest.size,
+            skip: skip,
+        });
+
+        const total = await this.prismaService.contact.count({
+            where:{
+                username: user.username,
+                AND: filters,
+            },
+        });
+
+        return {
+            data: contacts.map(contact => this.toContactResponse(contact)),
+            paging: {
+                current_page: searchRequest.page,
+                size: searchRequest.size,
+                total_page: Math.ceil(total / searchRequest.size),
+            }
+        }
     }
 }
