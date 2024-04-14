@@ -25,25 +25,23 @@ describe('ContactController (e2e)', () => {
   });
 
   // Test CREATE CONTACT
-  describe("POST /api/contacts", () => {
+  describe('POST /api/contacts', () => {
     beforeEach(async () => {
-      await testService.deleteContact();
-      await testService.deleteUser();
+      await testService.deleteAll();
 
       await testService.createUser();
-
     });
 
-    it("should be rejected if request is invalid", async () => {
+    it('should be rejected if request is invalid', async () => {
       const response = await request(app.getHttpServer())
-      .post('/api/contacts')
-      .set('Authorization', 'test')
-      .send({
-        first_name: '',
-        last_name: '',
-        email: 'salah',
-        phone: '',
-      });
+        .post('/api/contacts')
+        .set('Authorization', 'test')
+        .send({
+          first_name: '',
+          last_name: '',
+          email: 'salah',
+          phone: '',
+        });
 
       logger.info(response.body);
 
@@ -51,16 +49,16 @@ describe('ContactController (e2e)', () => {
       expect(response.body.errors).toBeDefined();
     });
 
-    it("should be able to create contact", async () => {
+    it('should be able to create contact', async () => {
       const response = await request(app.getHttpServer())
-      .post('/api/contacts')
-      .set('Authorization', 'test')
-      .send({
-        first_name: 'test',
-        last_name: 'test',
-        email: 'test@example.com',
-        phone: '9999',
-      });
+        .post('/api/contacts')
+        .set('Authorization', 'test')
+        .send({
+          first_name: 'test',
+          last_name: 'test',
+          email: 'test@example.com',
+          phone: '9999',
+        });
 
       logger.info(response.body);
 
@@ -71,32 +69,28 @@ describe('ContactController (e2e)', () => {
       expect(response.body.data.email).toBe('test@example.com');
       expect(response.body.data.phone).toBe('9999');
     });
-    
-
   });
 
   // Test GET CONTACT
-  describe("GET /api/contacts/:contactId", () => {
+  describe('GET /api/contacts/:contactId', () => {
     beforeEach(async () => {
-      await testService.deleteContact();
-      await testService.deleteUser();
+      await testService.deleteAll();
 
       await testService.createUser();
       await testService.createContact();
-
     });
 
-    it("should be rejected if contact is not found", async () => {
+    it('should be rejected if contact is not found', async () => {
       const contact = await testService.getContact();
       const response = await request(app.getHttpServer())
-      .get(`/api/contacts/${contact.id + 1}`)
-      .set('Authorization', 'test')
-      .send({
-        first_name: '',
-        last_name: '',
-        email: 'salah',
-        phone: '',
-      });
+        .get(`/api/contacts/${contact.id + 1}`)
+        .set('Authorization', 'test')
+        .send({
+          first_name: '',
+          last_name: '',
+          email: 'salah',
+          phone: '',
+        });
 
       logger.info(response.body);
 
@@ -104,11 +98,11 @@ describe('ContactController (e2e)', () => {
       expect(response.body.errors).toBeDefined();
     });
 
-    it("should be able to create contact", async () => {
+    it('should be able to create contact', async () => {
       const contact = await testService.getContact();
       const response = await request(app.getHttpServer())
-      .get(`/api/contacts/${contact.id}`)
-      .set('Authorization', 'test')
+        .get(`/api/contacts/${contact.id}`)
+        .set('Authorization', 'test');
 
       logger.info(response.body);
 
@@ -119,32 +113,28 @@ describe('ContactController (e2e)', () => {
       expect(response.body.data.email).toBe('test@example.com');
       expect(response.body.data.phone).toBe('9999');
     });
-    
-
   });
 
   // Test UPDATE CONTACT
-  describe("PUT /api/contacts/:contactId", () => {
+  describe('PUT /api/contacts/:contactId', () => {
     beforeEach(async () => {
-      await testService.deleteContact();
-      await testService.deleteUser();
+      await testService.deleteAll();
 
       await testService.createUser();
       await testService.createContact();
-
     });
 
-    it("should be rejected if request is invalid", async () => {
+    it('should be rejected if request is invalid', async () => {
       const contact = await testService.getContact();
       const response = await request(app.getHttpServer())
-      .put(`/api/contacts/${contact.id}`)
-      .set('Authorization', 'test')
-      .send({
-        first_name: '',
-        last_name: '',
-        email: 'salah',
-        phone: '',
-      });
+        .put(`/api/contacts/${contact.id}`)
+        .set('Authorization', 'test')
+        .send({
+          first_name: '',
+          last_name: '',
+          email: 'salah',
+          phone: '',
+        });
 
       logger.info(response.body);
 
@@ -152,17 +142,17 @@ describe('ContactController (e2e)', () => {
       expect(response.body.errors).toBeDefined();
     });
 
-    it("should be rejected if contact is not found", async () => {
+    it('should be rejected if contact is not found', async () => {
       const contact = await testService.getContact();
       const response = await request(app.getHttpServer())
-      .put(`/api/contacts/${contact.id + 1}`)
-      .set('Authorization', 'test')
-      .send({
-        first_name: 'test',
-        last_name: 'test',
-        email: 'test@example.com',
-        phone: '9999',
-      });
+        .put(`/api/contacts/${contact.id + 1}`)
+        .set('Authorization', 'test')
+        .send({
+          first_name: 'test',
+          last_name: 'test',
+          email: 'test@example.com',
+          phone: '9999',
+        });
 
       logger.info(response.body);
 
@@ -170,17 +160,17 @@ describe('ContactController (e2e)', () => {
       expect(response.body.errors).toBeDefined();
     });
 
-    it("should be able to update contact", async () => {
+    it('should be able to update contact', async () => {
       const contact = await testService.getContact();
       const response = await request(app.getHttpServer())
-      .put(`/api/contacts/${contact.id}`)
-      .set('Authorization', 'test')
-      .send({
-        first_name: 'test updated',
-        last_name: 'test updated',
-        email: 'testupdated@example.com',
-        phone: '8888',
-      });
+        .put(`/api/contacts/${contact.id}`)
+        .set('Authorization', 'test')
+        .send({
+          first_name: 'test updated',
+          last_name: 'test updated',
+          email: 'testupdated@example.com',
+          phone: '8888',
+        });
 
       logger.info(response.body);
 
@@ -191,32 +181,28 @@ describe('ContactController (e2e)', () => {
       expect(response.body.data.email).toBe('testupdated@example.com');
       expect(response.body.data.phone).toBe('8888');
     });
-    
-
   });
 
   // Test DELETE CONTACT
-  describe("DELETE /api/contacts", () => {
+  describe('DELETE /api/contacts', () => {
     beforeEach(async () => {
-      await testService.deleteContact();
-      await testService.deleteUser();
+      await testService.deleteAll();
 
       await testService.createUser();
       await testService.createContact();
-
     });
 
-    it("should be rejected if contact is not found", async () => {
+    it('should be rejected if contact is not found', async () => {
       const contact = await testService.getContact();
       const response = await request(app.getHttpServer())
-      .delete(`/api/contacts/${contact.id + 1}`)
-      .set('Authorization', 'test')
-      .send({
-        first_name: '',
-        last_name: '',
-        email: 'salah',
-        phone: '',
-      });
+        .delete(`/api/contacts/${contact.id + 1}`)
+        .set('Authorization', 'test')
+        .send({
+          first_name: '',
+          last_name: '',
+          email: 'salah',
+          phone: '',
+        });
 
       logger.info(response.body);
 
@@ -224,36 +210,32 @@ describe('ContactController (e2e)', () => {
       expect(response.body.errors).toBeDefined();
     });
 
-    it("should be able to remove contact", async () => {
+    it('should be able to remove contact', async () => {
       const contact = await testService.getContact();
       const response = await request(app.getHttpServer())
-      .delete(`/api/contacts/${contact.id}`)
-      .set('Authorization', 'test')
+        .delete(`/api/contacts/${contact.id}`)
+        .set('Authorization', 'test');
 
       logger.info(response.body);
 
       expect(response.status).toBe(200);
       expect(response.body.data).toBe(true);
     });
-    
-
   });
 
   // Test SEARCH CONTACT
-  describe("GET /api/contacts", () => {
+  describe('GET /api/contacts', () => {
     beforeEach(async () => {
-      await testService.deleteContact();
-      await testService.deleteUser();
+      await testService.deleteAll();
 
       await testService.createUser();
       await testService.createContact();
-
     });
 
-    it("should be able to search contact", async () => {
+    it('should be able to search contact', async () => {
       const response = await request(app.getHttpServer())
-      .get(`/api/contacts`)
-      .set('Authorization', 'test')
+        .get(`/api/contacts`)
+        .set('Authorization', 'test');
 
       logger.info(response.body);
 
@@ -261,13 +243,13 @@ describe('ContactController (e2e)', () => {
       expect(response.body.data.length).toBe(1);
     });
 
-    it("should be able to search contact by name", async () => {
+    it('should be able to search contact by name', async () => {
       const response = await request(app.getHttpServer())
-      .get(`/api/contacts`)
-      .query({
-        name: 'es',
-      })
-      .set('Authorization', 'test')
+        .get(`/api/contacts`)
+        .query({
+          name: 'es',
+        })
+        .set('Authorization', 'test');
 
       logger.info(response.body);
 
@@ -275,13 +257,13 @@ describe('ContactController (e2e)', () => {
       expect(response.body.data.length).toBe(1);
     });
 
-    it("should be able to search contact by name not found", async () => {
+    it('should be able to search contact by name not found', async () => {
       const response = await request(app.getHttpServer())
-      .get(`/api/contacts`)
-      .query({
-        name: 'wrong',
-      })
-      .set('Authorization', 'test')
+        .get(`/api/contacts`)
+        .query({
+          name: 'wrong',
+        })
+        .set('Authorization', 'test');
 
       logger.info(response.body);
 
@@ -289,13 +271,13 @@ describe('ContactController (e2e)', () => {
       expect(response.body.data.length).toBe(0);
     });
 
-    it("should be able to search contact by email", async () => {
+    it('should be able to search contact by email', async () => {
       const response = await request(app.getHttpServer())
-      .get(`/api/contacts`)
-      .query({
-        email: 'es',
-      })
-      .set('Authorization', 'test')
+        .get(`/api/contacts`)
+        .query({
+          email: 'es',
+        })
+        .set('Authorization', 'test');
 
       logger.info(response.body);
 
@@ -303,13 +285,13 @@ describe('ContactController (e2e)', () => {
       expect(response.body.data.length).toBe(1);
     });
 
-    it("should be able to search contact by email not found", async () => {
+    it('should be able to search contact by email not found', async () => {
       const response = await request(app.getHttpServer())
-      .get(`/api/contacts`)
-      .query({
-        email: 'wrong',
-      })
-      .set('Authorization', 'test')
+        .get(`/api/contacts`)
+        .query({
+          email: 'wrong',
+        })
+        .set('Authorization', 'test');
 
       logger.info(response.body);
 
@@ -317,13 +299,13 @@ describe('ContactController (e2e)', () => {
       expect(response.body.data.length).toBe(0);
     });
 
-    it("should be able to search contact by phone", async () => {
+    it('should be able to search contact by phone', async () => {
       const response = await request(app.getHttpServer())
-      .get(`/api/contacts`)
-      .query({
-        phone: '99',
-      })
-      .set('Authorization', 'test')
+        .get(`/api/contacts`)
+        .query({
+          phone: '99',
+        })
+        .set('Authorization', 'test');
 
       logger.info(response.body);
 
@@ -331,13 +313,13 @@ describe('ContactController (e2e)', () => {
       expect(response.body.data.length).toBe(1);
     });
 
-    it("should be able to search contact by phone not found", async () => {
+    it('should be able to search contact by phone not found', async () => {
       const response = await request(app.getHttpServer())
-      .get(`/api/contacts`)
-      .query({
-        phone: '88',
-      })
-      .set('Authorization', 'test')
+        .get(`/api/contacts`)
+        .query({
+          phone: '88',
+        })
+        .set('Authorization', 'test');
 
       logger.info(response.body);
 
@@ -345,14 +327,14 @@ describe('ContactController (e2e)', () => {
       expect(response.body.data.length).toBe(0);
     });
 
-    it("should be able to search contact with page", async () => {
+    it('should be able to search contact with page', async () => {
       const response = await request(app.getHttpServer())
-      .get(`/api/contacts`)
-      .query({
-        size: 1,
-        page: 2,
-      })
-      .set('Authorization', 'test')
+        .get(`/api/contacts`)
+        .query({
+          size: 1,
+          page: 2,
+        })
+        .set('Authorization', 'test');
 
       logger.info(response.body);
 
@@ -362,8 +344,5 @@ describe('ContactController (e2e)', () => {
       expect(response.body.paging.total_page).toBe(1);
       expect(response.body.paging.size).toBe(1);
     });
-    
-
   });
-
 });

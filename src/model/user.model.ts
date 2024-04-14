@@ -1,23 +1,21 @@
-import exp from "constants";
-
 export class RegisterUserRequest {
-    username: string;
-    password: string;
-    name: string;
+  username: string;
+  password: string;
+  name: string;
 }
 
 export class UserResponse {
-    username: string;
-    name: string;
-    token?: string;
+  username: string;
+  name: string;
+  token?: string;
 }
 
 export class LoginUserRequest {
-    username: string;
-    password: string;
+  username: string;
+  password: string;
 }
 
 export class UpdateUserRequest {
-    name?: string;
-    password?: string;
+  name?: string;
+  password?: string;
 }

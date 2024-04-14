@@ -25,29 +25,26 @@ describe('AddressController (e2e)', () => {
   });
 
   // Test CREATE ADDRESS
-  describe("POST /api/contacts/:contactId/addresses", () => {
+  describe('POST /api/contacts/:contactId/addresses', () => {
     beforeEach(async () => {
-      await testService.deleteAddress();
-      await testService.deleteContact();
-      await testService.deleteUser();
+      await testService.deleteAll();
 
       await testService.createUser();
       await testService.createContact();
-
     });
 
-    it("should be rejected if request is invalid", async () => {
+    it('should be rejected if request is invalid', async () => {
       const contact = await testService.getContact();
       const response = await request(app.getHttpServer())
-      .post(`/api/contacts/${contact.id}/addresses`)
-      .set('Authorization', 'test')
-      .send({
-        street: '',
-        city: '',
-        province: '',
-        country: '',
-        postal_code: '',
-      });
+        .post(`/api/contacts/${contact.id}/addresses`)
+        .set('Authorization', 'test')
+        .send({
+          street: '',
+          city: '',
+          province: '',
+          country: '',
+          postal_code: '',
+        });
 
       logger.info(response.body);
 
@@ -55,18 +52,18 @@ describe('AddressController (e2e)', () => {
       expect(response.body.errors).toBeDefined();
     });
 
-    it("should be able to create address", async () => {
+    it('should be able to create address', async () => {
       const contact = await testService.getContact();
       const response = await request(app.getHttpServer())
-      .post(`/api/contacts/${contact.id}/addresses`)
-      .set('Authorization', 'test')
-      .send({
-        street: 'jalan test',
-        city: 'kota test',
-        province: 'provinsi test',
-        country: 'negara test',
-        postal_code: '1111',
-      });
+        .post(`/api/contacts/${contact.id}/addresses`)
+        .set('Authorization', 'test')
+        .send({
+          street: 'jalan test',
+          city: 'kota test',
+          province: 'provinsi test',
+          country: 'negara test',
+          postal_code: '1111',
+        });
 
       logger.info(response.body);
 
@@ -78,29 +75,24 @@ describe('AddressController (e2e)', () => {
       expect(response.body.data.country).toBe('negara test');
       expect(response.body.data.postal_code).toBe('1111');
     });
-    
-
   });
 
   // Test GET ADDRESS
-  describe("GET /api/contacts/:contactId/addresses/:addressId", () => {
+  describe('GET /api/contacts/:contactId/addresses/:addressId', () => {
     beforeEach(async () => {
-      await testService.deleteAddress();
-      await testService.deleteContact();
-      await testService.deleteUser();
+      await testService.deleteAll();
 
       await testService.createUser();
       await testService.createContact();
       await testService.createAddress();
-
     });
 
-    it("should be rejected if contact is not found", async () => {
+    it('should be rejected if contact is not found', async () => {
       const contact = await testService.getContact();
       const address = await testService.getAddress();
       const response = await request(app.getHttpServer())
-      .get(`/api/contacts/${contact.id + 1}/addresses/${address.id}`)
-      .set('Authorization', 'test')
+        .get(`/api/contacts/${contact.id + 1}/addresses/${address.id}`)
+        .set('Authorization', 'test');
 
       logger.info(response.body);
 
@@ -108,12 +100,12 @@ describe('AddressController (e2e)', () => {
       expect(response.body.errors).toBeDefined();
     });
 
-    it("should be rejected if address is not found", async () => {
+    it('should be rejected if address is not found', async () => {
       const contact = await testService.getContact();
       const address = await testService.getAddress();
       const response = await request(app.getHttpServer())
-      .get(`/api/contacts/${contact.id}/addresses/${address.id + 1}`)
-      .set('Authorization', 'test')
+        .get(`/api/contacts/${contact.id}/addresses/${address.id + 1}`)
+        .set('Authorization', 'test');
 
       logger.info(response.body);
 
@@ -121,12 +113,12 @@ describe('AddressController (e2e)', () => {
       expect(response.body.errors).toBeDefined();
     });
 
-    it("should be able to get address", async () => {
+    it('should be able to get address', async () => {
       const contact = await testService.getContact();
       const address = await testService.getAddress();
       const response = await request(app.getHttpServer())
-      .get(`/api/contacts/${contact.id}/addresses/${address.id}`)
-      .set('Authorization', 'test')
+        .get(`/api/contacts/${contact.id}/addresses/${address.id}`)
+        .set('Authorization', 'test');
 
       logger.info(response.body);
 
@@ -138,36 +130,31 @@ describe('AddressController (e2e)', () => {
       expect(response.body.data.country).toBe('negara test');
       expect(response.body.data.postal_code).toBe('1111');
     });
-    
-
   });
 
   // Test UPDATE ADDRESS
-  describe("PUT /api/contacts/:contactId/addresses/:addressId", () => {
+  describe('PUT /api/contacts/:contactId/addresses/:addressId', () => {
     beforeEach(async () => {
-      await testService.deleteAddress();
-      await testService.deleteContact();
-      await testService.deleteUser();
+      await testService.deleteAll();
 
       await testService.createUser();
       await testService.createContact();
       await testService.createAddress();
-
     });
 
-    it("should be rejected if request is invalid", async () => {
+    it('should be rejected if request is invalid', async () => {
       const contact = await testService.getContact();
       const address = await testService.getAddress();
       const response = await request(app.getHttpServer())
-      .put(`/api/contacts/${contact.id}/addresses/${address.id}`)
-      .set('Authorization', 'test')
-      .send({
-        street: '',
-        city: '',
-        province: '',
-        country: '',
-        postal_code: '',
-      });
+        .put(`/api/contacts/${contact.id}/addresses/${address.id}`)
+        .set('Authorization', 'test')
+        .send({
+          street: '',
+          city: '',
+          province: '',
+          country: '',
+          postal_code: '',
+        });
 
       logger.info(response.body);
 
@@ -175,19 +162,19 @@ describe('AddressController (e2e)', () => {
       expect(response.body.errors).toBeDefined();
     });
 
-    it("should be able to update address", async () => {
+    it('should be able to update address', async () => {
       const contact = await testService.getContact();
       const address = await testService.getAddress();
       const response = await request(app.getHttpServer())
-      .put(`/api/contacts/${contact.id}/addresses/${address.id}`)
-      .set('Authorization', 'test')
-      .send({
-        street: 'jalan test',
-        city: 'kota test',
-        province: 'provinsi test',
-        country: 'negara test',
-        postal_code: '1111',
-      });
+        .put(`/api/contacts/${contact.id}/addresses/${address.id}`)
+        .set('Authorization', 'test')
+        .send({
+          street: 'jalan test',
+          city: 'kota test',
+          province: 'provinsi test',
+          country: 'negara test',
+          postal_code: '1111',
+        });
 
       logger.info(response.body);
 
@@ -200,19 +187,19 @@ describe('AddressController (e2e)', () => {
       expect(response.body.data.postal_code).toBe('1111');
     });
 
-    it("should be rejected if contact is not found", async () => {
+    it('should be rejected if contact is not found', async () => {
       const contact = await testService.getContact();
       const address = await testService.getAddress();
       const response = await request(app.getHttpServer())
-      .put(`/api/contacts/${contact.id + 1}/addresses/${address.id}`)
-      .set('Authorization', 'test')
-      .send({
-        street: 'jalan test',
-        city: 'kota test',
-        province: 'provinsi test',
-        country: 'negara test',
-        postal_code: '1111',
-      });
+        .put(`/api/contacts/${contact.id + 1}/addresses/${address.id}`)
+        .set('Authorization', 'test')
+        .send({
+          street: 'jalan test',
+          city: 'kota test',
+          province: 'provinsi test',
+          country: 'negara test',
+          postal_code: '1111',
+        });
 
       logger.info(response.body);
 
@@ -220,48 +207,43 @@ describe('AddressController (e2e)', () => {
       expect(response.body.errors).toBeDefined();
     });
 
-    it("should be rejected if address is not found", async () => {
+    it('should be rejected if address is not found', async () => {
       const contact = await testService.getContact();
       const address = await testService.getAddress();
       const response = await request(app.getHttpServer())
-      .put(`/api/contacts/${contact.id}/addresses/${address.id + 1}`)
-      .set('Authorization', 'test')
-      .send({
-        street: 'jalan test',
-        city: 'kota test',
-        province: 'provinsi test',
-        country: 'negara test',
-        postal_code: '1111',
-      });
+        .put(`/api/contacts/${contact.id}/addresses/${address.id + 1}`)
+        .set('Authorization', 'test')
+        .send({
+          street: 'jalan test',
+          city: 'kota test',
+          province: 'provinsi test',
+          country: 'negara test',
+          postal_code: '1111',
+        });
 
       logger.info(response.body);
 
       expect(response.status).toBe(404);
       expect(response.body.errors).toBeDefined();
     });
-    
-
   });
 
   // Test REMOVE ADDRESS
-  describe("DELETE /api/contacts/:contactId/addresses/:addressId", () => {
+  describe('DELETE /api/contacts/:contactId/addresses/:addressId', () => {
     beforeEach(async () => {
-      await testService.deleteAddress();
-      await testService.deleteContact();
-      await testService.deleteUser();
+      await testService.deleteAll();
 
       await testService.createUser();
       await testService.createContact();
       await testService.createAddress();
-
     });
 
-    it("should be rejected if contact is not found", async () => {
+    it('should be rejected if contact is not found', async () => {
       const contact = await testService.getContact();
       const address = await testService.getAddress();
       const response = await request(app.getHttpServer())
-      .delete(`/api/contacts/${contact.id + 1}/addresses/${address.id}`)
-      .set('Authorization', 'test')
+        .delete(`/api/contacts/${contact.id + 1}/addresses/${address.id}`)
+        .set('Authorization', 'test');
 
       logger.info(response.body);
 
@@ -269,12 +251,12 @@ describe('AddressController (e2e)', () => {
       expect(response.body.errors).toBeDefined();
     });
 
-    it("should be rejected if address is not found", async () => {
+    it('should be rejected if address is not found', async () => {
       const contact = await testService.getContact();
       const address = await testService.getAddress();
       const response = await request(app.getHttpServer())
-      .delete(`/api/contacts/${contact.id}/addresses/${address.id + 1}`)
-      .set('Authorization', 'test')
+        .delete(`/api/contacts/${contact.id}/addresses/${address.id + 1}`)
+        .set('Authorization', 'test');
 
       logger.info(response.body);
 
@@ -282,12 +264,12 @@ describe('AddressController (e2e)', () => {
       expect(response.body.errors).toBeDefined();
     });
 
-    it("should be able to delete address", async () => {
+    it('should be able to delete address', async () => {
       const contact = await testService.getContact();
       const address = await testService.getAddress();
       const response = await request(app.getHttpServer())
-      .delete(`/api/contacts/${contact.id}/addresses/${address.id}`)
-      .set('Authorization', 'test')
+        .delete(`/api/contacts/${contact.id}/addresses/${address.id}`)
+        .set('Authorization', 'test');
 
       logger.info(response.body);
 
@@ -297,28 +279,23 @@ describe('AddressController (e2e)', () => {
       const addressResult = await testService.getAddress();
       expect(addressResult).toBeNull();
     });
-    
-
   });
 
   // Test LIST ADDRESSES
-  describe("GET /api/contacts/:contactId/addresses", () => {
+  describe('GET /api/contacts/:contactId/addresses', () => {
     beforeEach(async () => {
-      await testService.deleteAddress();
-      await testService.deleteContact();
-      await testService.deleteUser();
+      await testService.deleteAll();
 
       await testService.createUser();
       await testService.createContact();
       await testService.createAddress();
-
     });
 
-    it("should be rejected if contact is not found", async () => {
+    it('should be rejected if contact is not found', async () => {
       const contact = await testService.getContact();
       const response = await request(app.getHttpServer())
-      .get(`/api/contacts/${contact.id + 1}/addresses`)
-      .set('Authorization', 'test')
+        .get(`/api/contacts/${contact.id + 1}/addresses`)
+        .set('Authorization', 'test');
 
       logger.info(response.body);
 
@@ -326,11 +303,11 @@ describe('AddressController (e2e)', () => {
       expect(response.body.errors).toBeDefined();
     });
 
-    it("should be able to list address", async () => {
+    it('should be able to list address', async () => {
       const contact = await testService.getContact();
       const response = await request(app.getHttpServer())
-      .get(`/api/contacts/${contact.id}/addresses`)
-      .set('Authorization', 'test')
+        .get(`/api/contacts/${contact.id}/addresses`)
+        .set('Authorization', 'test');
 
       logger.info(response.body);
 
@@ -343,8 +320,5 @@ describe('AddressController (e2e)', () => {
       expect(response.body.data[0].country).toBe('negara test');
       expect(response.body.data[0].postal_code).toBe('1111');
     });
-    
-
   });
-
 });
